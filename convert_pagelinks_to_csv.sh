@@ -3,4 +3,4 @@ FILE=fiwiki-latest-pagelinks.sql
 cat $FILE |
 sed $'s/^INSERT INTO `pagelinks` VALUES (//; s/),(/\\\n/g' |
 awk -F ',' 'NR > 40 && $2 == 0 { print $0 }' |
-sed $'s/,0,/,/; s/\',0.*$/\'/'
+sed $'s/,0,/\t/; s/\',0.*$/\'/'

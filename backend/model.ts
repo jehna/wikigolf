@@ -24,14 +24,22 @@ SELECT COALESCE(
   (SELECT AS STRUCT * FROM q5 WHERE s6 = "'${toPage}'" LIMIT 1)
 );`
 
-export async function getShortestRoute(fromPage: string, toPage: string) {
+export async function getShortestRoute(
+  fromPage: string,
+  toPage: string
+): Promise<string[] | null> {
   const options = {
     query: query(fromPage, toPage),
     location: 'US'
   }
 
   const [job] = await bigqueryClient.createQueryJob(options)
-  const [rows] = await job.getQueryResults()
+  const [[{ f0_: result }]] = await job.getQueryResults()
 
-  return rows
+  return result ? formatResult(result) : null
 }
+
+const formatResult = (results: { [key: string]: string }) =>
+  Object.values(results)
+    .filter(Boolean)
+    .map(res => res.slice(1, -1))

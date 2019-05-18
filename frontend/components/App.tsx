@@ -1,3 +1,4 @@
 import React from 'react'
+import Wikigolf from './Wikigolf'
 
-export default () => <div>Hello world!</div>
+export default () => <Wikigolf />

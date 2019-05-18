@@ -1,0 +1,1 @@
+web: yarn ts-node backend/index.ts

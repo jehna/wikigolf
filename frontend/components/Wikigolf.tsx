@@ -20,9 +20,7 @@ const Main = styled(F.div)`
 const Heading = styled.h1`
   background: linear-gradient(135deg, #54c2fe, #1452bf);
   color: #fff;
-  font-family: Calibri Bold, AvenirNext, Avenir, -apple-system,
-    BlinkMacSystemFont, Roboto Slab, Droid Serif, Segoe UI, Oxygen-Sans, Ubuntu,
-    Cantarell, Georgia, serif;
+  font-family: 'Nunito Sans', sans-serif;
   font-weight: 600;
   margin: 0.3em 0;
   text-align: center;

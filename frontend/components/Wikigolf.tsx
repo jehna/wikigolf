@@ -1,7 +1,10 @@
 import React from 'react'
-import { Atom, F, reactiveList } from '@grammarly/focal'
+import { Atom, lift } from '@grammarly/focal'
 import PageSelector from './PageSelector'
 import { getShortestRoute } from '../model/api'
+import Results from './Results'
+
+const LiftedResults = lift(Results)
 
 export default ({
   from = Atom.create(''),
@@ -28,20 +31,7 @@ export default ({
         </label>
         <button type="submit">Search!</button>
       </form>
-      <h2>Results:</h2>
-      <F.ol>
-        {reactiveList(results, result => (
-          <li key={result}>
-            <a href={`https://fi.wikipedia.org/wiki/${result}`} target="_blank">
-              {fromWikiUrl(result)}
-            </a>
-          </li>
-        ))}
-      </F.ol>
+      <LiftedResults results={results} />
     </div>
   )
-}
-
-function fromWikiUrl(path: string) {
-  return path.replace('_', ' ')
 }

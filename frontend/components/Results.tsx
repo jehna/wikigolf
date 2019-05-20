@@ -17,7 +17,7 @@ export default ({ results }: ResultsProps) => {
       <h2>Results:</h2>
       <p>
         You can get from {fromWikiUrl(results[0])} to{' '}
-        {fromWikiUrl(results[results.length - 1])} in just {results.length}{' '}
+        {fromWikiUrl(results[results.length - 1])} in just {results.length - 1}{' '}
         clicks:
       </p>
       <ol>

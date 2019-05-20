@@ -1,23 +1,33 @@
 import React from 'react'
-import { Atom, lift } from '@grammarly/focal'
+import { Atom, F } from '@grammarly/focal'
 import PageSelector from './PageSelector'
 import { getShortestRoute } from '../model/api'
 import Results from './Results'
-
-const LiftedResults = lift(Results)
+import { filter, flatMap } from 'rxjs/operators'
+import AppState, { LoadingState } from '../AppState'
 
 export default ({
   from = Atom.create(''),
   to = Atom.create(''),
-  results = Atom.create<string[]>([])
+  appState = Atom.create<AppState>({ type: 'initial' })
 }) => {
+  appState
+    .pipe(
+      filter(isLoading),
+      flatMap(s => getShortestRoute(s.from, s.to))
+    )
+    .subscribe(
+      results => appState.set({ type: 'success', results }),
+      error => appState.set({ type: 'error', error })
+    )
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    results.set(await getShortestRoute(from.get(), to.get()))
+    appState.set({ type: 'loading', from: from.get(), to: to.get() })
   }
 
   return (
-    <div>
+    <F.div>
       <h1>Wikigolf</h1>
       <p>Find out the shortest path between two Wikipedia articles — easily!</p>
       <form onSubmit={onSubmit}>
@@ -31,7 +41,22 @@ export default ({
         </label>
         <button type="submit">Search!</button>
       </form>
-      <LiftedResults results={results} />
-    </div>
+      {appState.view(getResults)}
+    </F.div>
   )
+}
+
+function isLoading(state: AppState): state is LoadingState {
+  return state.type === 'loading'
+}
+
+function getResults(appState: AppState) {
+  switch (appState.type) {
+    case 'success':
+      return <Results results={appState.results} />
+    case 'loading':
+      return <progress />
+    case 'error':
+      return <div>{appState.error.message}</div>
+  }
 }

@@ -36,7 +36,7 @@ export default ({ suggestions, onSelect }: SuggestionsProps) => (
   <Positioner>
     <SuggestionBox>
       {reactiveList(suggestions, suggestion => (
-        <Suggestion onClick={() => onSelect(suggestion)}>
+        <Suggestion key={suggestion} onClick={() => onSelect(suggestion)}>
           {suggestion}
         </Suggestion>
       ))}

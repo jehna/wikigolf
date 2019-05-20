@@ -6,6 +6,7 @@ import Results from './Results'
 import { filter, flatMap } from 'rxjs/operators'
 import AppState, { LoadingState } from '../AppState'
 import styled from 'styled-components'
+import Loading from './Loading'
 
 const Main = styled(F.div)`
   border-radius: 0.2em;
@@ -35,7 +36,7 @@ const Heading = styled.h1`
   padding: 0.32em 0 0.3em;
 `
 
-const Form = styled.form`
+const Form = styled(F.form)`
   margin: 1em 0;
   text-align: center;
 `
@@ -89,9 +90,8 @@ export default ({
             onChange={value => to.set(value)}
             placeholder="E.g. Ranskan kansalliskirjasto"
           />
-          <Submit type="submit">Search!</Submit>
+          {appState.view(getResults)}
         </Form>
-        {appState.view(getResults)}
       </Main>
     </>
   )
@@ -106,7 +106,9 @@ function getResults(appState: AppState) {
     case 'success':
       return <Results results={appState.results} />
     case 'loading':
-      return <progress />
+      return <Loading />
+    case 'initial':
+      return <Submit type="submit">Search!</Submit>
     case 'error':
       return <div>{appState.error.message}</div>
   }

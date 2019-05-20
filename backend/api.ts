@@ -6,6 +6,8 @@ const router = new Router({
 })
 
 router.get('/shortest-route', async ctx => {
+  ctx.set('Cache-Control', 'public, max-age=31536000, immutable')
+
   if (typeof ctx.query.from !== 'string' || typeof ctx.query.to !== 'string') {
     ctx.status = 300
     return

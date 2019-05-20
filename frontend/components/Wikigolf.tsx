@@ -12,9 +12,7 @@ const Main = styled(F.div)`
   border-radius: 0.2em;
   background: #fff;
   padding: 1.5em 1em;
-  font-family: Calibri Bold, AvenirNext, Avenir, -apple-system,
-    BlinkMacSystemFont, Roboto Slab, Droid Serif, Segoe UI, Oxygen-Sans, Ubuntu,
-    Cantarell, Georgia, serif;
+  font-family: 'Nunito Sans', sans-serif;
   max-width: 600px;
   margin: auto;
 `

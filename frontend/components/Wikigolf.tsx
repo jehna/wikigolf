@@ -33,11 +33,15 @@ export default ({
         {reactiveList(results, result => (
           <li key={result}>
             <a href={`https://fi.wikipedia.org/wiki/${result}`} target="_blank">
-              {result}
+              {fromWikiUrl(result)}
             </a>
           </li>
         ))}
       </F.ol>
     </div>
   )
+}
+
+function fromWikiUrl(path: string) {
+  return path.replace('_', ' ')
 }

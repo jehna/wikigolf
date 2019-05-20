@@ -1,8 +1,11 @@
 export async function getShortestRoute(from: string, to: string) {
   const req = await fetch(
-    `/api/shortest-route?from=${encodeURIComponent(
-      from
-    )}&to=${encodeURIComponent(to)}`
+    `/api/shortest-route?from=${toWikiUrl(from)}&to=${toWikiUrl(to)}`
   )
-  return req.json()
+  const response = (await req.json()) as string[]
+  return response
+}
+
+function toWikiUrl(url: string) {
+  return encodeURIComponent(url.replace(' ', '_'))
 }

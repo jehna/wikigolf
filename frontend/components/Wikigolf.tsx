@@ -71,6 +71,8 @@ export default ({
     appState.set({ type: 'loading', from: from.get(), to: to.get() })
   }
 
+  const restart = () => appState.set({ type: 'initial' })
+
   return (
     <>
       <Heading>Wikigolf</Heading>
@@ -88,6 +90,14 @@ export default ({
           />
           {appState.view(getResults)}
         </Form>
+        {appState.view(
+          state =>
+            (state.type === 'error' || state.type === 'success') && (
+              <Submit type="button" onClick={restart}>
+                Restart
+              </Submit>
+            )
+        )}
       </Main>
     </>
   )

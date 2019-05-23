@@ -77,7 +77,7 @@ export default ({
     <>
       <Heading>Wikigolf</Heading>
       <Main>
-        <div>Find out the shortest path in Finnish wikipedia between:</div>
+        <div>Find least amount of clicks in Finnish wikipedia between:</div>
         <Form onSubmit={onSubmit}>
           <PageSelector
             onChange={value => from.set(value)}

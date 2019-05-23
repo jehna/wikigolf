@@ -89,6 +89,15 @@ This starts Heroku and Webpack, and starts watching for your files for changes.
 This project
 
 - Is a website and an API
+  - Website uses awesome Focal library from Grammarly
+  - Full stack
+    - React
+    - Koa
+    - Foal
+    - Google BigQuery
+    - TypeScript
+    - Heroku
+    - Styled Components
 - Does a breadth-first search from a Wikipedia page name to another Wikipedia
   page name by using link relations between those pages
 - Website works only on Finnish wikipedia site now, but the search should work

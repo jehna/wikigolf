@@ -34,5 +34,5 @@ export default ({ results }: ResultsProps) => {
 }
 
 function fromWikiUrl(path: string) {
-  return path.replace('_', ' ')
+  return path.replace(/_/g, ' ')
 }

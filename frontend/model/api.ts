@@ -11,5 +11,5 @@ export async function getShortestRoute(from: string, to: string) {
 }
 
 function toWikiUrl(url: string) {
-  return encodeURIComponent(url.replace(' ', '_'))
+  return encodeURIComponent(url.replace(/ /g, '_'))
 }

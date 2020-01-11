@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "core-js": "^3.6.3",
+    "csv": "^5.3.1",
     "delimiter-stream": "^2.0.0",
     "node-sql-parser": "^1.6.20",
     "nodemon": "^1.18.11",

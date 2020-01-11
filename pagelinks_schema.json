@@ -1,0 +1,4 @@
+[
+  {"name": "id_from", "type": "integer", "mode": "required"},
+  {"name": "name_to", "type": "string", "mode": "required"}
+]

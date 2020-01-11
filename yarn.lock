@@ -681,6 +681,11 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
+big-integer@^1.6.45:
+  version "1.6.48"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
+  integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
+
 big.js@^5.1.2, big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
@@ -1102,6 +1107,11 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
+core-js@^3.6.3:
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.3.tgz#cebda69dd069bf90066414d2b2425ffd1f3dcd79"
+  integrity sha512-DOO9b18YHR+Wk5kJ/c5YFbXuUETreD4TrvXb6edzqZE3aAEd0eJIAWghZ9HttMuiON8SVCnU3fqA4rPxRDD1HQ==
+
 core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -1290,6 +1300,11 @@ delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
+
+delimiter-stream@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/delimiter-stream/-/delimiter-stream-2.0.0.tgz#e7732c4dfc57609c4248278273c5661ebd16ecb0"
+  integrity sha512-JHI/cyQ46xF6NWgcs+WlAvoHq3zRtPbD7d9/LaifaIeQRE1Z+PPGhnIHIGq0EEpVEkTSANM9/2ku4Pp8+zp9+g==
 
 depd@^1.1.2, depd@~1.1.2:
   version "1.1.2"
@@ -2938,6 +2953,14 @@ node-pre-gyp@^0.12.0:
     rimraf "^2.6.1"
     semver "^5.3.0"
     tar "^4"
+
+node-sql-parser@^1.6.20:
+  version "1.6.20"
+  resolved "https://registry.yarnpkg.com/node-sql-parser/-/node-sql-parser-1.6.20.tgz#c186d3a812a0544d1bc255ac4bfc35032c23b378"
+  integrity sha512-/BFF2R4g9lQN6LIXJE/gnc2F5nRm0+PiMoMEBmM/xt99phMTlcMTYpp/eeYV63o5QZiYAXbnsIYDA0hsnoJ41w==
+  dependencies:
+    big-integer "^1.6.45"
+    has "^1.0.3"
 
 nodemon@^1.18.11:
   version "1.19.0"

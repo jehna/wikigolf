@@ -36,23 +36,10 @@ Here are links to download all data from Finnish wikipedia:
 - All links between all Wikipedia pages: https://dumps.wikimedia.your.org/fiwiki/latest/fiwiki-latest-pagelinks.sql.gz
 - All pages' metadata: https://dumps.wikimedia.your.org/fiwiki/latest/fiwiki-latest-page.sql.gz
 
-Download and unzip these files to [converter/](converter/) folder.
+There's a script at [converter/](converter/) folder that downloads the data and
+streams it to .tsv files. You can then upload this tsv file to BigQuery.
 
-### 2. Conver the SQL dumps to TSV files
-
-You can find files [`convert_page_to_csv.sh`](converter/convert_page_to_csv.sh)
-and [`convert_pagelinks_to_csv.sh`](converter/convert_pagelinks_to_csv.sh) at
-the same folder.
-
-```shell
-cd converter
-convert_page_to_csv.sh
-convert_pagelinks_to_csv.sh
-```
-
-This converts the SQL dumps to TSV files that you can use at Google BigQuery.
-
-### 3. Upload TSVs to BigQuery
+### 2. Upload TSVs to BigQuery
 
 Next up create a new Google Cloud Storage bucket, and upload the CSV files
 there. Go to the [BigQuery Console](https://console.cloud.google.com/bigquery)
@@ -61,14 +48,14 @@ and import the TSV files from Cloud Storage.
 This should result in two BigQuery tables: `wikigolf_fi.pagelinks` and
 `wikigolf_fi.pages`.
 
-### 4. Allow API access to BigQuery.
+### 3. Allow API access to BigQuery.
 
 Then create a Google Cloud IAM service account to fill in your .env file for
 keys you can find at [`.env-example`](.env-example).
 
 Remember to enable BigQuery API access from the console too!
 
-### 5. Start the dev server
+### 4. Start the dev server
 
 You can install the npm dependencies by running:
 

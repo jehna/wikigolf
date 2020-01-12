@@ -12,7 +12,7 @@ const bigqueryClient = new BigQuery({
   }
 })
 
-const upload = async (lang, table: 'pages' | 'pagelinks') => {
+const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
   console.log(`Uploading ${table}_${lang}.tsv...`)
 
   const filename = path.join(__dirname, '..', `${table}_${lang}.tsv`)

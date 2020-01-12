@@ -44,7 +44,7 @@ const readPagelinks = async locale => {
   const tsvizer = csv.stringify({delimiter: '\t'})
   tsvizer.pipe(output)
 
-  getSqlInsertDataFromStream(gunzip)
+  await getSqlInsertDataFromStream(gunzip)
     .filter(([, namespace]) => namespace === 0)
     .forEach(([from, , title]) => {
       if (++n % 100000 === 0) console.log(`PageLinks rows written: ${n}`)
@@ -62,7 +62,7 @@ const readPages = async locale => {
   const tsvizer = csv.stringify({delimiter: '\t'})
   tsvizer.pipe(output)
 
-  getSqlInsertDataFromStream(gunzip)
+  await getSqlInsertDataFromStream(gunzip)
     .filter(([, namespace]) => namespace === 0)
     .forEach(([id, , name]) => {
       if (++n % 100000 === 0) console.log(`Pages rows written: ${n}`)

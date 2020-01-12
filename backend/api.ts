@@ -6,7 +6,7 @@ const router = new Router({
 })
 
 router.get('/shortest-route', async ctx => {
-  ctx.set('Cache-Control', 'public, max-age=31536000, immutable')
+  ctx.set('Cache-Control', 'public, max-age=108000')
 
   if (typeof ctx.query.from !== 'string' || typeof ctx.query.to !== 'string' || !['fi', 'en'].includes(ctx.query.locale)) {
     ctx.status = 400

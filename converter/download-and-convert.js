@@ -30,42 +30,42 @@ const getSqlInsertDataFromStream = stream => {
 const readPagelinks = async locale => {
   let n = 0
   const input = await get(pagelinksUrl(locale))
-  const output = fs.createWriteStream(`./pagelinks_${locale}.csv`)
+  const output = fs.createWriteStream(`./pagelinks_${locale}.tsv`)
   const gunzip = zlib.createGunzip()
   input.pipe(gunzip)
-  const csvizer = csv.stringify()
-  csvizer.pipe(output)
+  const tsvizer = csv.stringify({delimiter: '\t'})
+  tsvizer.pipe(output)
 
   getSqlInsertDataFromStream(gunzip)
     .filter(([, namespace]) => namespace === 0)
     .forEach(([from, , title]) => {
       if (++n % 100000 === 0) console.log(`PageLinks rows written: ${n}`)
 
-      csvizer.write([from, title])
+      tsvizer.write([from, title])
     })
 }
 
 const readPages = async locale => {
   let n = 0
   const input = await get(pagesUrl(locale))
-  const output = fs.createWriteStream(`./pages_${locale}.csv`)
+  const output = fs.createWriteStream(`./pages_${locale}.tsv`)
   const gunzip = zlib.createGunzip()
   input.pipe(gunzip)
-  const csvizer = csv.stringify()
-  csvizer.pipe(output)
+  const tsvizer = csv.stringify({delimiter: '\t'})
+  tsvizer.pipe(output)
 
   getSqlInsertDataFromStream(gunzip)
     .filter(([, namespace]) => namespace === 0)
     .forEach(([id, , name]) => {
       if (++n % 100000 === 0) console.log(`Pages rows written: ${n}`)
 
-      csvizer.write([id, name])
+      tsvizer.write([id, name])
     })
 }
 
 const LANG = process.argv[2]
 
-if (['fi', 'en'].includes(LANG))
+if (!['fi', 'en'].includes(LANG))
   throw new Error(`Language ${LANG} not supported!`)
 
 console.log(`Loading ${LANG} wikipedia pages and pagelinks...`)

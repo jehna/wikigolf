@@ -2,3 +2,4 @@ fiwiki*.sql
 *.csv
 public/js
 .env
+*.tsv

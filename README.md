@@ -37,9 +37,17 @@ Here are links to download all data from Finnish wikipedia:
 - All pages' metadata: https://dumps.wikimedia.your.org/fiwiki/latest/fiwiki-latest-page.sql.gz
 
 There's a script at [converter/](converter/) folder that downloads the data and
-streams it to .csv files. The `load_to_bigquery.sh` both loads the files and
+streams it to .tsv files. The `load_to_bigquery.sh` both loads the files and
 uploads the results to BigQuery. Note that you should have `bq` CLI client
 installed on your machine.
+
+Usage:
+
+```sh
+./converter/load_to_bigquery.sh fi
+```
+
+Running this script creates and uploads the `fi` wikipedia files to BigQuery.
 
 ### 2. Allow API access to BigQuery.
 
@@ -85,6 +93,20 @@ This project
 - Limits the search to maximum of 5 steps
   - With an average page having ~30 links to other pages, this means the 5 steps
     should cover the whole wikipedia over 33 times
+
+## Deploying
+
+This project can be deployed to Heroku, with same environment variables that
+you're using locally.
+
+You can use Github Actions (or any other CI) to keep your porject up-to-date
+with periodic data updates
+
+### Setup CI
+
+1. Create a service account to Google Cloud with at least the BigQuery Admin
+   permission and download the `secrets.json` file to your computer.
+2.
 
 ## Contributing
 

@@ -1,6 +1,6 @@
-export async function getShortestRoute(from: string, to: string) {
+export async function getShortestRoute(from: string, to: string, locale: string) {
   const req = await fetch(
-    `/api/shortest-route?from=${toWikiUrl(from)}&to=${toWikiUrl(to)}`
+    `/api/shortest-route?from=${toWikiUrl(from)}&to=${toWikiUrl(to)}&locale=${encodeURIComponent(locale)}`
   )
   if (!req.ok) {
     throw new Error('No path found 😩')

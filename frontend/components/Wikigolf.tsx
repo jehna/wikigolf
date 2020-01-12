@@ -59,7 +59,7 @@ export default ({
   appState
     .pipe(
       filter(isLoading),
-      flatMap(s => getShortestRoute(s.from, s.to))
+      flatMap(s => getShortestRoute(s.from, s.to, 'fi'))
     )
     .subscribe(
       results => appState.set({ type: 'success', results }),

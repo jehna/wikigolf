@@ -46,7 +46,7 @@ export default ({ onChange, placeholder }: PageSelectorProps) => {
       debounceTime(200),
       flatMap(suggestWikiPage)
     )
-    .subscribe(newSuggestions => suggestions.set(newSuggestions))
+    .subscribe(newSuggestions => suggestions.set(newSuggestions as any)) // TODO: Fix types, broken from ts update
 
   selectedValue.subscribe(value => {
     localValue.set(value)

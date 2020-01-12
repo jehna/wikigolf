@@ -20,11 +20,19 @@ const getSqlInsertDataFromStream = stream => {
   stream.pipe(lineByLineStream)
 
   return AsyncIterator.from(lineByLineStream)
+    .map(v => {
+      lineByLineStream.pause()
+      return v
+    })
     .filter(data => data.slice(0, 6).compare(INSERT_LINE_BUFFER) === 0)
     .map(data => data.toString('utf-8'))
     .flatMap(line => parser.astify(line))
     .flatMap(({ values }) => values)
     .map(({ value }) => value.map(v => v.value))
+    .map(v => {
+      lineByLineStream.resume()
+      return v
+    })
 }
 
 const readPagelinks = async locale => {
@@ -69,5 +77,9 @@ if (!['fi', 'en'].includes(LANG))
   throw new Error(`Language ${LANG} not supported!`)
 
 console.log(`Loading ${LANG} wikipedia pages and pagelinks...`)
-readPagelinks(LANG)
-readPages(LANG)
+
+;(async () => {
+  await readPagelinks(LANG)
+  await readPages(LANG)
+})()
+

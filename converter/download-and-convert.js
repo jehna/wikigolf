@@ -4,8 +4,10 @@ const zlib = require('zlib')
 const DelimiterStream = require('delimiter-stream')
 const { Parser } = require('node-sql-parser')
 const https = require('https')
-const csv = require('csv')
+const csv = require('d3-dsv')
 const get = url => new Promise(resolve => https.get(url, resolve))
+
+const heartbeat = () => get('https://wikigolf1.herokuapp.com/keepalive')
 
 const INSERT_LINE_BUFFER = Buffer.from('INSERT')
 
@@ -13,6 +15,23 @@ const pagelinksUrl = locale =>
   `https://dumps.wikimedia.your.org/${locale}wiki/latest/${locale}wiki-latest-pagelinks.sql.gz`
 const pagesUrl = locale =>
   `https://dumps.wikimedia.your.org/${locale}wiki/latest/${locale}wiki-latest-page.sql.gz`
+
+const tmpFilename = () => `/tmp/wikigolf-${Date.now()}${~(Math.random()*1e9)}`
+const downloadGzippedToTmpFile = url => new Promise(async (resolve, reject) => {
+  const randomFilename = tmpFilename()
+  const output = fs.createWriteStream(randomFilename)
+  const input =  await get(url)
+  const gunzip = zlib.createGunzip()
+
+  const stream = input.pipe(gunzip).pipe(output)
+  stream.on('error', reject)
+  input.on('end', () => {
+    console.log('Done!')
+    resolve(randomFilename)
+  })
+
+  console.log(`Downloading ${url} to ${randomFilename} ...`)
+})
 
 const getSqlInsertDataFromStream = stream => {
   const parser = new Parser()
@@ -36,50 +55,54 @@ const getSqlInsertDataFromStream = stream => {
 }
 
 const readPagelinks = async locale => {
+  const inputFile = await downloadGzippedToTmpFile(pagelinksUrl(locale))
+  const input = fs.createReadStream(inputFile)
+
   let n = 0
-  const input = await get(pagelinksUrl(locale))
   const output = fs.createWriteStream(`./pagelinks_${locale}.tsv`)
-  const gunzip = zlib.createGunzip()
-  input.pipe(gunzip)
-  const tsvizer = csv.stringify({delimiter: '\t'})
-  tsvizer.pipe(output)
 
-  await getSqlInsertDataFromStream(gunzip)
+  console.log('Starting to stream pagelinks to tsv file...')
+  await getSqlInsertDataFromStream(input)
     .filter(([, namespace]) => namespace === 0)
-    .forEach(([from, , title]) => {
+    .forEach(async ([from, , title]) => {
       if (++n % 100000 === 0) console.log(`PageLinks rows written: ${n}`)
+      if (n > 0) output.write('\n')
 
-      tsvizer.write([from, title])
+      output.write(csv.tsvFormatRow([from, title]))
+      if (n % 500000 === 0) await heartbeat()
     })
+  console.log('Done!')
 }
 
 const readPages = async locale => {
+  const inputFile = await downloadGzippedToTmpFile(pagesUrl(locale))
+  const input = fs.createReadStream(inputFile)
+
   let n = 0
-  const input = await get(pagesUrl(locale))
   const output = fs.createWriteStream(`./pages_${locale}.tsv`)
-  const gunzip = zlib.createGunzip()
-  input.pipe(gunzip)
-  const tsvizer = csv.stringify({delimiter: '\t'})
-  tsvizer.pipe(output)
 
-  await getSqlInsertDataFromStream(gunzip)
+  console.log('Starting to stream pages to tsv file...')
+  await getSqlInsertDataFromStream(input)
     .filter(([, namespace]) => namespace === 0)
-    .forEach(([id, , name]) => {
+    .forEach(async ([id, , name]) => {
       if (++n % 100000 === 0) console.log(`Pages rows written: ${n}`)
+      if (n > 0) output.write('\n')
 
-      tsvizer.write([id, name])
+      output.write(csv.tsvFormatRow([id, name]))
+      if (n % 500000 === 0) await heartbeat()
     })
+  console.log('Done!')
 }
 
 const LANG = process.argv[2]
+const CMD = process.argv[3]
 
 if (!['fi', 'en'].includes(LANG))
   throw new Error(`Language ${LANG} not supported!`)
 
-console.log(`Loading ${LANG} wikipedia pages and pagelinks...`)
+if (!['pages', 'pagelinks'].includes(CMD))
+  throw new Error(`Command ${CMD} not supported!`)
 
-;(async () => {
-  await readPagelinks(LANG)
-  await readPages(LANG)
-})()
+if (CMD === 'pages') readPages(LANG)
+if (CMD === 'pagelinks') readPagelinks(LANG)
 

@@ -22,7 +22,6 @@
     "@types/react-dom": "^16.8.3",
     "@types/styled-components": "^4.1.14",
     "core-js": "^3.6.3",
-    "d3-dsv": "^1.2.0",
     "delimiter-stream": "^2.0.0",
     "dotenv": "^8.2.0",
     "fetch-jsonp": "^1.1.3",

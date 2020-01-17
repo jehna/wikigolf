@@ -13,15 +13,15 @@ const bigqueryClient = new BigQuery({
 })
 
 const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
-  console.log(`Uploading ${table}_${lang}.tsv...`)
+  console.log(`Uploading ${table}_${lang}.ndjson...`)
 
-  const filename = path.join(__dirname, '..', `${table}_${lang}.tsv`)
+  const filename = path.join(__dirname, '..', `${table}_${lang}.ndjson`)
   const [job] = await bigqueryClient
     .dataset(`wikigolf_${lang}`)
     .table(table)
-    .load(filename, { fieldDelimiter: '\t' })
+    .load(filename, { format: 'NEWLINE_DELIMITED_JSON' })
 
-  console.log(`Uploading ${table}_${lang}.tsv completed, ${job.id}`)
+  console.log(`Uploading ${table}_${lang}.ndjson completed, ${job.id}`)
 
   // Check the job's status for errors
   const errors = job.status?.errors ?? []

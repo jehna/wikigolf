@@ -37,7 +37,7 @@ Here are links to download all data from Finnish wikipedia:
 - All pages' metadata: https://dumps.wikimedia.your.org/fiwiki/latest/fiwiki-latest-page.sql.gz
 
 There's a script at [converter/](converter/) folder that downloads the data and
-streams it to .tsv files. The `load_to_bigquery.sh` both loads the files and
+streams it to .ndjson files. The `load_to_bigquery.sh` both loads the files and
 uploads the results to BigQuery. Note that you should have `bq` CLI client
 installed on your machine.
 

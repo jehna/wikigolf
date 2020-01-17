@@ -4,7 +4,6 @@ const zlib = require('zlib')
 const DelimiterStream = require('delimiter-stream')
 const { Parser } = require('node-sql-parser')
 const https = require('https')
-const csv = require('d3-dsv')
 const get = url => new Promise(resolve => https.get(url, resolve))
 
 const heartbeat = () => get('https://wikigolf1.herokuapp.com/keepalive')
@@ -59,16 +58,16 @@ const readPagelinks = async locale => {
   const input = fs.createReadStream(inputFile)
 
   let n = 0
-  const output = fs.createWriteStream(`./pagelinks_${locale}.tsv`)
+  const output = fs.createWriteStream(`./pagelinks_${locale}.ndjson`)
 
-  console.log('Starting to stream pagelinks to tsv file...')
+  console.log('Starting to stream pagelinks to ndjson file...')
   await getSqlInsertDataFromStream(input)
     .filter(([, namespace]) => namespace === 0)
     .forEach(async ([from, , title]) => {
       if (++n % 100000 === 0) console.log(`PageLinks rows written: ${n}`)
       if (n > 0) output.write('\n')
 
-      output.write(csv.tsvFormatRow([from, title]))
+      output.write(JSON.stringify({ from, title }))
       if (n % 500000 === 0) await heartbeat()
     })
   console.log('Done!')
@@ -79,16 +78,16 @@ const readPages = async locale => {
   const input = fs.createReadStream(inputFile)
 
   let n = 0
-  const output = fs.createWriteStream(`./pages_${locale}.tsv`)
+  const output = fs.createWriteStream(`./pages_${locale}.ndjson`)
 
-  console.log('Starting to stream pages to tsv file...')
+  console.log('Starting to stream pages to ndjson file...')
   await getSqlInsertDataFromStream(input)
     .filter(([, namespace]) => namespace === 0)
     .forEach(async ([id, , name]) => {
       if (++n % 100000 === 0) console.log(`Pages rows written: ${n}`)
       if (n > 0) output.write('\n')
 
-      output.write(csv.tsvFormatRow([id, name]))
+      output.write(JSON.stringify({ id, name }))
       if (n % 500000 === 0) await heartbeat()
     })
   console.log('Done!')

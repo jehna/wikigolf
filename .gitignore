@@ -3,3 +3,4 @@ fiwiki*.sql
 public/js
 .env
 *.tsv
+*.ndjson

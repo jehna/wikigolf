@@ -2,7 +2,7 @@ require('core-js/proposals/iterator-helpers')
 const fs = require('fs')
 const zlib = require('zlib')
 const DelimiterStream = require('delimiter-stream')
-const { Parser } = require('node-sql-parser')
+const fromSql = require('./from-sql')
 const https = require('https')
 const get = url => new Promise(resolve => https.get(url, resolve))
 
@@ -38,24 +38,13 @@ const downloadGzippedToTmpFile = url => new Promise(async (resolve, reject) => {
 })
 
 const getSqlInsertDataFromStream = stream => {
-  const parser = new Parser()
   const lineByLineStream = new DelimiterStream()
   stream.pipe(lineByLineStream)
 
   return AsyncIterator.from(lineByLineStream)
-    .map(v => {
-      lineByLineStream.pause()
-      return v
-    })
     .filter(data => data.slice(0, 6).compare(INSERT_LINE_BUFFER) === 0)
     .map(data => data.toString('utf-8'))
-    .flatMap(line => parser.astify(line))
-    .flatMap(({ values }) => values)
-    .map(({ value }) => value.map(v => v.value))
-    .map(v => {
-      lineByLineStream.resume()
-      return v
-    })
+    .flatMap(fromSql)
 }
 
 const readPagelinks = async locale => {

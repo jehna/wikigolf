@@ -69,11 +69,10 @@ const readPagelinks = async locale => {
   await getSqlInsertDataFromStream(input)
     .filter(([, namespace]) => namespace === 0)
     .forEach(async ([from, , title]) => {
-      if (++n % 100000 === 0) console.log(`PageLinks rows written: ${n}`)
       if (n > 0) output.write('\n')
+      if (++n % 100000 === 0) console.log(`PageLinks rows written: ${n}`)
 
-      output.write(JSON.stringify({ from, title }))
-      if (n % 500000 === 0) await heartbeat()
+      output.write(JSON.stringify({ id_from: from, name_to: title }))
     })
   console.log('Done!')
 }
@@ -89,11 +88,10 @@ const readPages = async locale => {
   await getSqlInsertDataFromStream(input)
     .filter(([, namespace]) => namespace === 0)
     .forEach(async ([id, , name]) => {
-      if (++n % 100000 === 0) console.log(`Pages rows written: ${n}`)
       if (n > 0) output.write('\n')
+      if (++n % 100000 === 0) console.log(`Pages rows written: ${n}`)
 
       output.write(JSON.stringify({ id, name }))
-      if (n % 500000 === 0) await heartbeat()
     })
   console.log('Done!')
 }
@@ -110,3 +108,4 @@ if (!['pages', 'pagelinks'].includes(CMD))
 if (CMD === 'pages') readPages(LANG)
 if (CMD === 'pagelinks') readPagelinks(LANG)
 
+setInterval(() => heartbeat(), 1000 * 60 * 5)

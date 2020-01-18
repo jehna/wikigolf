@@ -43,4 +43,3 @@ export async function getShortestRoute(
 const formatResult = (results: { [key: string]: string }) =>
   Object.values(results)
     .filter(Boolean)
-    .map(res => res.slice(1, -1))

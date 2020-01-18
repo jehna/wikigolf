@@ -22,10 +22,15 @@ const downloadGzippedToTmpFile = url => new Promise(async (resolve, reject) => {
   const input =  await get(url)
   const gunzip = zlib.createGunzip()
 
+  let downloadedBytes = 0
+  input.on('data', d => downloadedBytes += d.length)
+  const logger = setInterval(() => console.log(`${Math.round(downloadedBytes/1024/1024)}mb downloaded`), 1000 * 10)
+
   const stream = input.pipe(gunzip).pipe(output)
   stream.on('error', reject)
   input.on('end', () => {
     console.log('Done!')
+    clearInterval(logger)
     resolve(randomFilename)
   })
 

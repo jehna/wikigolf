@@ -19,7 +19,10 @@ const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
   const [job] = await bigqueryClient
     .dataset(`wikigolf_${lang}`)
     .table(table)
-    .load(filename, { format: 'NEWLINE_DELIMITED_JSON' })
+    .load(filename, {
+      sourceFormat: 'NEWLINE_DELIMITED_JSON',
+      schema: { fields: table === 'pages' ? PAGES_SCHEMA : PAGELINKS_SCHEMA }
+    })
 
   console.log(`Uploading ${table}_${lang}.ndjson completed, ${job.id}`)
 
@@ -29,6 +32,15 @@ const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
     throw errors
   }
 }
+
+const PAGELINKS_SCHEMA = [
+  { name: 'id_from', type: 'integer', mode: 'REQUIRED' },
+  { name: 'name_to', type: 'string', mode: 'REQUIRED' }
+]
+const PAGES_SCHEMA = [
+  { name: 'id', type: 'integer', mode: 'REQUIRED' },
+  { name: 'name', type: 'string', mode: 'REQUIRED' }
+]
 
 const LANG = process.argv[2]
 

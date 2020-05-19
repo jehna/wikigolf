@@ -11,9 +11,9 @@ const heartbeat = () => get('https://wikigolf1.herokuapp.com/keepalive')
 const INSERT_LINE_BUFFER = Buffer.from('INSERT')
 
 const pagelinksUrl = locale =>
-  `https://dumps.wikimedia.your.org/${locale}wiki/latest/${locale}wiki-latest-pagelinks.sql.gz`
+  `https://dumps.wikimedia.org/${locale}wiki/latest/${locale}wiki-latest-pagelinks.sql.gz`
 const pagesUrl = locale =>
-  `https://dumps.wikimedia.your.org/${locale}wiki/latest/${locale}wiki-latest-page.sql.gz`
+  `https://dumps.wikimedia.org/${locale}wiki/latest/${locale}wiki-latest-page.sql.gz`
 
 const tmpFilename = () => `/tmp/wikigolf-${Date.now()}${~(Math.random()*1e9)}`
 const downloadGzippedToTmpFile = url => new Promise(async (resolve, reject) => {

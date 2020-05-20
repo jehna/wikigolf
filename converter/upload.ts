@@ -8,23 +8,23 @@ const bigqueryClient = new BigQuery({
   projectId: process.env.GCLOUD_PROJECT_ID,
   credentials: {
     private_key: atob(process.env.GCLOUD_PRIVATE_KEY_BASE64!),
-    client_email: process.env.GCLOUD_SERVICE_EMAIL
-  }
+    client_email: process.env.GCLOUD_SERVICE_EMAIL,
+  },
 })
 
 const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
-  console.log(`Uploading ${table}_${lang}.ndjson...`)
+  console.log(`Uploading ${table}_${lang}.csv...`)
 
-  const filename = path.join(__dirname, '..', `${table}_${lang}.ndjson`)
+  const filename = path.join(__dirname, '..', `${table}_${lang}.csv`)
   const [job] = await bigqueryClient
     .dataset(`wikigolf_${lang}`)
     .table(table)
     .load(filename, {
-      sourceFormat: 'NEWLINE_DELIMITED_JSON',
-      schema: { fields: table === 'pages' ? PAGES_SCHEMA : PAGELINKS_SCHEMA }
+      sourceFormat: 'CSV',
+      schema: { fields: table === 'pages' ? PAGES_SCHEMA : PAGELINKS_SCHEMA },
     })
 
-  console.log(`Uploading ${table}_${lang}.ndjson completed, ${job.id}`)
+  console.log(`Uploading ${table}_${lang}.csv completed, ${job.id}`)
 
   // Check the job's status for errors
   const errors = job.status?.errors ?? []
@@ -35,11 +35,11 @@ const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
 
 const PAGELINKS_SCHEMA = [
   { name: 'id_from', type: 'integer', mode: 'REQUIRED' },
-  { name: 'name_to', type: 'string', mode: 'REQUIRED' }
+  { name: 'name_to', type: 'string', mode: 'REQUIRED' },
 ]
 const PAGES_SCHEMA = [
   { name: 'id', type: 'integer', mode: 'REQUIRED' },
-  { name: 'name', type: 'string', mode: 'REQUIRED' }
+  { name: 'name', type: 'string', mode: 'REQUIRED' },
 ]
 
 const LANG = process.argv[2]

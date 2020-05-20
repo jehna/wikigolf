@@ -1,4 +1,4 @@
-fiwiki*.sql
+*.sql
 *.csv
 public/js
 .env

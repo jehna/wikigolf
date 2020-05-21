@@ -74,6 +74,7 @@ fn main() {
     .has_headers(false)
     .from_writer(io::stdout());
 
+  let mut lines_read: u64 = 0;
   for line in reader.lines() {
     match line {
       Err(e) => {
@@ -86,6 +87,11 @@ fn main() {
           wtr.serialize(result).unwrap();
         }
       }
+    }
+
+    lines_read = lines_read + 1;
+    if lines_read % 100 == 0 {
+      eprintln!("Lined read: {}", lines_read);
     }
   }
 

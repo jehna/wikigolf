@@ -12,7 +12,7 @@ use nom::{
 };
 use serde::Serialize;
 use std::fs;
-use std::io;
+use std::io::{self, prelude::*, BufReader};
 
 #[derive(Debug, Serialize, Clone)]
 struct Page {
@@ -68,15 +68,27 @@ fn main() {
   }
   let filename = &args[1];
 
-  let pagelinks = fs::read_to_string(filename).unwrap();
-  let (_, results) = parse_sql_file(&*pagelinks).unwrap();
-
+  let mut file = fs::File::open(filename).unwrap();
+  let reader = BufReader::new(&mut file);
   let mut wtr = WriterBuilder::new()
     .has_headers(false)
     .from_writer(io::stdout());
-  for result in results {
-    wtr.serialize(result).unwrap();
+
+  for line in reader.lines() {
+    match line {
+      Err(e) => {
+        eprintln!("Error in line reading: {:?}", e);
+      }
+      Ok(single_line) => {
+        let (_, results) = parse_sql_file(&*single_line).unwrap_or(("", Vec::new()));
+
+        for result in results {
+          wtr.serialize(result).unwrap();
+        }
+      }
+    }
   }
+
   wtr.flush().unwrap();
 }
 

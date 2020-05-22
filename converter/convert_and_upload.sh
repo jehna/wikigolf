@@ -15,12 +15,8 @@ fi
 cd rust-converter
 cargo build --release
 
-echo "Parsing pages..."
-./target/release/rust-wiki-link-parser "../../${LANG}wiki-latest-page.sql" > "../../pages_$LANG.csv"
-echo "Done!"
-
-echo "Parsing pagelinks..."
-./target/release/rust-wiki-link-parser "../../${LANG}wiki-latest-pagelinks.sql" > "../../pagelinks_$LANG.csv"
+echo "Parsing..."
+./target/release/rust-wiki-link-parser "../../" "$LANG"
 echo "Done!"
 
 yarn ts-node ./converter/upload.ts "$LANG"

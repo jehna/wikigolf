@@ -6,6 +6,7 @@ export interface LoadingState {
   type: 'loading'
   from: string
   to: string
+  lang: string
 }
 
 interface ErrorState {

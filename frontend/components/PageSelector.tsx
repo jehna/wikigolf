@@ -1,6 +1,6 @@
 import React from 'react'
 import { F, Atom } from '@grammarly/focal'
-import { flatMap, filter, debounceTime } from 'rxjs/operators'
+import { flatMap, filter, debounceTime, zip } from 'rxjs/operators'
 import { suggestWikiPage } from '../model/wikipedia'
 import Suggestions from './Suggestions'
 import styled from 'styled-components'
@@ -31,10 +31,11 @@ const Input = styled(F.input)`
 
 interface PageSelectorProps {
   onChange: (value: string) => void
+  lang: Atom<string>
   placeholder?: string
 }
 
-export default ({ onChange, placeholder }: PageSelectorProps) => {
+export default ({ onChange, placeholder, lang }: PageSelectorProps) => {
   const localValue = Atom.create('')
   const suggestions = Atom.create<string[]>([])
   const selectedValue = Atom.create('')
@@ -42,13 +43,13 @@ export default ({ onChange, placeholder }: PageSelectorProps) => {
   localValue
     .pipe(
       filter(Boolean),
-      filter(value => selectedValue.get() !== value),
+      filter((value) => selectedValue.get() !== value),
       debounceTime(200),
-      flatMap(suggestWikiPage)
+      flatMap((value: string) => suggestWikiPage(value, lang.get()))
     )
-    .subscribe(newSuggestions => suggestions.set(newSuggestions as any)) // TODO: Fix types, broken from ts update
+    .subscribe((newSuggestions) => suggestions.set(newSuggestions as any)) // TODO: Fix types, broken from ts update
 
-  selectedValue.subscribe(value => {
+  selectedValue.subscribe((value) => {
     localValue.set(value)
     suggestions.set([])
     onChange(value)
@@ -57,12 +58,12 @@ export default ({ onChange, placeholder }: PageSelectorProps) => {
   return (
     <Wrapper>
       <Input
-        onChange={e => localValue.set(e.currentTarget.value)}
+        onChange={(e) => localValue.set(e.currentTarget.value)}
         value={localValue}
         placeholder={placeholder}
       />
       <Suggestions
-        onSelect={suggestion => selectedValue.set(suggestion)}
+        onSelect={(suggestion) => selectedValue.set(suggestion)}
         suggestions={suggestions}
       />
     </Wrapper>

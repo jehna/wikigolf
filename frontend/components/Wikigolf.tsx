@@ -7,6 +7,7 @@ import { filter, flatMap } from 'rxjs/operators'
 import AppState, { LoadingState } from '../AppState'
 import styled from 'styled-components'
 import Loading from './Loading'
+import LanguageSelect from './LanguageSelect'
 
 const Main = styled(F.div)`
   border-radius: 0.2em;
@@ -54,21 +55,27 @@ const Submit = styled.button`
 export default ({
   from = Atom.create(''),
   to = Atom.create(''),
-  appState = Atom.create<AppState>({ type: 'initial' })
+  lang = Atom.create('en'),
+  appState = Atom.create<AppState>({ type: 'initial' }),
 }) => {
   appState
     .pipe(
       filter(isLoading),
-      flatMap(s => getShortestRoute(s.from, s.to, 'fi'))
+      flatMap((s) => getShortestRoute(s.from, s.to, s.lang))
     )
     .subscribe(
-      results => appState.set({ type: 'success', results }),
-      error => appState.set({ type: 'error', error })
+      (results) => appState.set({ type: 'success', results }),
+      (error) => appState.set({ type: 'error', error })
     )
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    appState.set({ type: 'loading', from: from.get(), to: to.get() })
+    appState.set({
+      type: 'loading',
+      from: from.get(),
+      to: to.get(),
+      lang: lang.get(),
+    })
   }
 
   const restart = () => appState.set({ type: 'initial' })
@@ -77,21 +84,27 @@ export default ({
     <>
       <Heading>Wikigolf</Heading>
       <Main>
-        <div>Find least amount of clicks in Finnish wikipedia between:</div>
+        <div>
+          Find least amount of clicks in{' '}
+          <LanguageSelect onChange={(value) => lang.set(value)} /> wikipedia
+          between:
+        </div>
         <Form onSubmit={onSubmit}>
           <PageSelector
-            onChange={value => from.set(value)}
+            lang={lang}
+            onChange={(value) => from.set(value)}
             placeholder="E.g. Helsinki"
           />
           <div>and</div>
           <PageSelector
-            onChange={value => to.set(value)}
+            lang={lang}
+            onChange={(value) => to.set(value)}
             placeholder="E.g. Ranskan kansalliskirjasto"
           />
           {appState.view(getResults)}
         </Form>
         {appState.view(
-          state =>
+          (state) =>
             (state.type === 'error' || state.type === 'success') && (
               <Submit type="button" onClick={restart}>
                 Restart

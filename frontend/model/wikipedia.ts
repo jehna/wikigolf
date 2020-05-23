@@ -1,10 +1,14 @@
 import fetch from 'fetch-jsonp'
 
-const BASE_WIKI_SUGGEST_URL =
-  'https://fi.wikipedia.org/w/api.php?action=opensearch&format=json&formatversion=2&&namespace=0&limit=10&suggest=false&redirects=resolve&search='
+const wikiSuggestUrl = (lang: string, input: string) =>
+  `https://${lang}.wikipedia.org/w/api.php?action=opensearch&format=json&formatversion=2&&namespace=0&limit=10&suggest=false&redirects=resolve&search=` +
+  encodeURIComponent(input)
 
-export async function suggestWikiPage(input: string): Promise<string[]> {
-  const req = await fetch(BASE_WIKI_SUGGEST_URL + encodeURIComponent(input))
+export async function suggestWikiPage(
+  input: string,
+  language: string
+): Promise<string[]> {
+  const req = await fetch(wikiSuggestUrl(language, input))
   const [, suggestions] = await req.json()
   return suggestions
 }

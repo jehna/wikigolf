@@ -77,7 +77,7 @@ This starts Heroku and Webpack, and starts watching for your files for changes.
 This project
 
 - Is a website and an API
-  - Website uses awesome Focal library from Grammarly
+  - Website uses React with hooks
   - Full stack
     - React
     - Koa

@@ -7,9 +7,10 @@ const Wrapper = styled.div`
 
 interface ResultsProps {
   results: string[]
+  lang: string
 }
 
-export default ({ results }: ResultsProps) => {
+export default ({ results, lang }: ResultsProps) => {
   if (!results.length) return null
 
   return (
@@ -21,9 +22,12 @@ export default ({ results }: ResultsProps) => {
         clicks:
       </p>
       <ol>
-        {results.map(result => (
+        {results.map((result) => (
           <li key={result}>
-            <a href={`https://fi.wikipedia.org/wiki/${result}`} target="_blank">
+            <a
+              href={`https://${lang}.wikipedia.org/wiki/${result}`}
+              target="_blank"
+            >
               {fromWikiUrl(result)}
             </a>
           </li>

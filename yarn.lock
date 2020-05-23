@@ -234,11 +234,6 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-0.4.0.tgz#4fbfcf4d85bb6a2e4ccf05aa63d2b10d6c9aad9b"
   integrity sha512-4yAHDC52TEMCNcMzVC8WlqnKKKq+Ssi2lXoUg9zWWkZ6U6tq9ZBRYLHHCRdfU+EU9YJsVmivwGcKYCjRGjnf4Q==
 
-"@grammarly/focal@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@grammarly/focal/-/focal-0.7.1.tgz#ef88c31565b460875d2d839453258abb42dfce2f"
-  integrity sha512-gmuvTPQXWGCz1oXWR5hojuCqXvywVYBL+bZ3N4zHOMO5152XWYQRYrbHkEKlRxPijhaCcfBEVYToXMZIMv12tA==
-
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"

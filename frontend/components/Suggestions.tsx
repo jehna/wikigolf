@@ -1,12 +1,11 @@
 import React from 'react'
-import { Atom, F, reactiveList } from '@grammarly/focal'
 import styled from 'styled-components'
 
 const Positioner = styled.div`
   position: relative;
 `
 
-const SuggestionBox = styled(F.div)`
+const SuggestionBox = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
@@ -28,14 +27,14 @@ const Suggestion = styled.div`
 `
 
 interface SuggestionsProps {
-  suggestions: Atom<string[]>
+  suggestions: string[]
   onSelect: (value: string) => void
 }
 
 export default ({ suggestions, onSelect }: SuggestionsProps) => (
   <Positioner>
     <SuggestionBox>
-      {reactiveList(suggestions, suggestion => (
+      {suggestions.map((suggestion) => (
         <Suggestion key={suggestion} onClick={() => onSelect(suggestion)}>
           {suggestion}
         </Suggestion>

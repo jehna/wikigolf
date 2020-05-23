@@ -1,6 +1,4 @@
-import React from 'react'
-import { F, Atom } from '@grammarly/focal'
-import { flatMap, filter, debounceTime, zip } from 'rxjs/operators'
+import React, { useState, useEffect, useCallback } from 'react'
 import { suggestWikiPage } from '../model/wikipedia'
 import Suggestions from './Suggestions'
 import styled from 'styled-components'
@@ -11,7 +9,7 @@ const Wrapper = styled.div`
   text-align: left;
 `
 
-const Input = styled(F.input)`
+const Input = styled.input`
   width: 100%;
   font-size: 28px;
   padding: 0.3em 0.4em;
@@ -27,45 +25,72 @@ const Input = styled(F.input)`
   ::placeholder {
     color: #aaa;
   }
+
+  &[disabled] {
+    background: white;
+    color: #000;
+  }
 `
 
 interface PageSelectorProps {
   onChange: (value: string) => void
-  lang: Atom<string>
+  lang: string
+  disabled?: boolean
   placeholder?: string
 }
 
-export default ({ onChange, placeholder, lang }: PageSelectorProps) => {
-  const localValue = Atom.create('')
-  const suggestions = Atom.create<string[]>([])
-  const selectedValue = Atom.create('')
+const debounce = (ms: number) => {
+  let timeout: number
+  return <T extends any[]>(cb: (...args: T) => void) => (...args: T) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => cb(...args), ms)
+  }
+}
 
-  localValue
-    .pipe(
-      filter(Boolean),
-      filter((value) => selectedValue.get() !== value),
-      debounceTime(200),
-      flatMap((value: string) => suggestWikiPage(value, lang.get()))
-    )
-    .subscribe((newSuggestions) => suggestions.set(newSuggestions as any)) // TODO: Fix types, broken from ts update
+const onValueChange = debounce(200)(
+  async (
+    localValue: string,
+    selectedValue: string,
+    lang: string,
+    setSuggestions: (value: string[]) => void
+  ) => {
+    if (!localValue || selectedValue === localValue) return
+    const result = await suggestWikiPage(localValue, lang)
+    setSuggestions(result)
+  }
+)
 
-  selectedValue.subscribe((value) => {
-    localValue.set(value)
-    suggestions.set([])
-    onChange(value)
-  })
+export default ({
+  onChange,
+  placeholder,
+  lang,
+  disabled,
+}: PageSelectorProps) => {
+  const [localValue, setLocalValue] = useState('')
+  const [selectedvalue, setSelectedValue] = useState('')
+  const [suggestions, setSuggestions] = useState<string[]>([])
+
+  useEffect(
+    () => onValueChange(localValue, selectedvalue, lang, setSuggestions),
+    [localValue, lang]
+  )
+
+  useEffect(() => {
+    onChange(selectedvalue)
+    setLocalValue(selectedvalue)
+    setSuggestions([])
+  }, [selectedvalue])
 
   return (
     <Wrapper>
       <Input
-        onChange={(e) => localValue.set(e.currentTarget.value)}
+        onChange={(e) => setLocalValue(e.currentTarget.value)}
+        onBlur={() => setLocalValue(selectedvalue)}
         value={localValue}
         placeholder={placeholder}
+        disabled={disabled}
       />
-      <Suggestions
-        onSelect={(suggestion) => selectedValue.set(suggestion)}
-        suggestions={suggestions}
-      />
+      <Suggestions onSelect={setSelectedValue} suggestions={suggestions} />
     </Wrapper>
   )
 }

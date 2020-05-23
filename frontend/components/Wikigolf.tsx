@@ -1,15 +1,13 @@
-import React from 'react'
-import { Atom, F } from '@grammarly/focal'
+import React, { useState, useEffect } from 'react'
 import PageSelector from './PageSelector'
 import { getShortestRoute } from '../model/api'
 import Results from './Results'
-import { filter, flatMap } from 'rxjs/operators'
 import AppState, { LoadingState } from '../AppState'
 import styled from 'styled-components'
 import Loading from './Loading'
 import LanguageSelect from './LanguageSelect'
 
-const Main = styled(F.div)`
+const Main = styled.div`
   border-radius: 0.2em;
   background: #fff;
   padding: 1.5em 1em;
@@ -33,7 +31,7 @@ const Heading = styled.h1`
   padding: 0.32em 0 0.3em;
 `
 
-const Form = styled(F.form)`
+const Form = styled.form`
   margin: 1em 0;
   text-align: center;
 `
@@ -50,35 +48,36 @@ const Submit = styled.button`
   margin-top: 1.5em;
   width: 100%;
   display: block;
+
+  &[disabled] {
+    background: #ddd;
+  }
 `
 
-export default ({
-  from = Atom.create(''),
-  to = Atom.create(''),
-  lang = Atom.create('en'),
-  appState = Atom.create<AppState>({ type: 'initial' }),
-}) => {
-  appState
-    .pipe(
-      filter(isLoading),
-      flatMap((s) => getShortestRoute(s.from, s.to, s.lang))
-    )
-    .subscribe(
-      (results) => appState.set({ type: 'success', results }),
-      (error) => appState.set({ type: 'error', error })
-    )
+export default ({}) => {
+  const [appState, setAppState] = useState<AppState>({ type: 'initial' })
+  useEffect(() => {
+    if (!isLoading(appState)) return
+    getShortestRoute(appState.from, appState.to, appState.lang)
+      .then((results) => setAppState({ type: 'success', results }))
+      .catch((error) => setAppState({ type: 'error', error }))
+  }, [appState])
+
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
+  const [lang, setLang] = useState('en')
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    appState.set({
+    setAppState({
       type: 'loading',
-      from: from.get(),
-      to: to.get(),
-      lang: lang.get(),
+      from,
+      to,
+      lang,
     })
   }
 
-  const restart = () => appState.set({ type: 'initial' })
+  const restart = () => setAppState({ type: 'initial' })
 
   return (
     <>
@@ -86,30 +85,29 @@ export default ({
       <Main>
         <div>
           Find least amount of clicks in{' '}
-          <LanguageSelect onChange={(value) => lang.set(value)} /> wikipedia
+          <LanguageSelect onChange={(value) => setLang(value)} /> wikipedia
           between:
         </div>
         <Form onSubmit={onSubmit}>
           <PageSelector
             lang={lang}
-            onChange={(value) => from.set(value)}
+            disabled={appState.type !== 'initial'}
+            onChange={(value) => setFrom(value)}
             placeholder="E.g. Helsinki"
           />
           <div>and</div>
           <PageSelector
             lang={lang}
-            onChange={(value) => to.set(value)}
-            placeholder="E.g. Ranskan kansalliskirjasto"
+            disabled={appState.type !== 'initial'}
+            onChange={(value) => setTo(value)}
+            placeholder="E.g. COVID-19"
           />
-          {appState.view(getResults)}
+          {getResults(appState, from, to, lang)}
         </Form>
-        {appState.view(
-          (state) =>
-            (state.type === 'error' || state.type === 'success') && (
-              <Submit type="button" onClick={restart}>
-                Restart
-              </Submit>
-            )
+        {(appState.type === 'error' || appState.type === 'success') && (
+          <Submit type="button" onClick={restart}>
+            Restart
+          </Submit>
         )}
       </Main>
     </>
@@ -120,14 +118,23 @@ function isLoading(state: AppState): state is LoadingState {
   return state.type === 'loading'
 }
 
-function getResults(appState: AppState) {
+function getResults(
+  appState: AppState,
+  from: string,
+  to: string,
+  lang: string
+) {
   switch (appState.type) {
     case 'success':
-      return <Results results={appState.results} />
+      return <Results results={appState.results} lang={lang} />
     case 'loading':
       return <Loading />
     case 'initial':
-      return <Submit type="submit">Search!</Submit>
+      return (
+        <Submit type="submit" disabled={!from || !to}>
+          Search!
+        </Submit>
+      )
     case 'error':
       return <div>{appState.error.message}</div>
   }

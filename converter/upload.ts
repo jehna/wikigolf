@@ -23,6 +23,7 @@ const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
       sourceFormat: 'CSV',
       maxBadRecords: 1000,
       schema: { fields: table === 'pages' ? PAGES_SCHEMA : PAGELINKS_SCHEMA },
+      writeDisposition: 'WRITE_TRUNCATE',
     })
 
   console.log(`Uploading ${table}_${lang}.csv completed, ${job.id}`)

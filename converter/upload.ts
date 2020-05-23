@@ -20,6 +20,14 @@ const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
     .dataset(`wikigolf_${lang}`)
     .table(table)
     .load(filename, {
+      rangePartitioning:
+        table === 'pagelinks'
+          ? {
+              field: 'id_from',
+              range: { start: '1', end: '100000000', interval: '50000' },
+            }
+          : undefined,
+      clustering: table === 'pagelinks' ? { fields: ['id_from'] } : undefined,
       sourceFormat: 'CSV',
       maxBadRecords: 1000,
       schema: { fields: table === 'pages' ? PAGES_SCHEMA : PAGELINKS_SCHEMA },
@@ -37,7 +45,7 @@ const upload = async (lang: string, table: 'pages' | 'pagelinks') => {
 
 const PAGELINKS_SCHEMA = [
   { name: 'id_from', type: 'integer', mode: 'REQUIRED' },
-  { name: 'name_to', type: 'string', mode: 'REQUIRED' },
+  { name: 'id_to', type: 'integer', mode: 'REQUIRED' },
 ]
 const PAGES_SCHEMA = [
   { name: 'id', type: 'integer', mode: 'REQUIRED' },

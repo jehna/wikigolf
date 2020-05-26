@@ -7,13 +7,14 @@ import styled from 'styled-components'
 import Loading from './Loading'
 import LanguageSelect from './LanguageSelect'
 
-const Main = styled.div`
+const Main = styled.main`
   border-radius: 0.2em;
   background: #fff;
   padding: 1.5em 1em;
   font-family: 'Nunito Sans', sans-serif;
   max-width: 600px;
   margin: auto;
+  min-height: calc(100vh - 85px);
 `
 
 const Heading = styled.h1`
@@ -29,6 +30,13 @@ const Heading = styled.h1`
   box-shadow: inset 0 -8px 0 -3px rgba(255, 255, 255, 0.2);
   margin: 0;
   padding: 0.32em 0 0.3em;
+`
+
+const Footer = styled.footer`
+  font-size: 0.7em;
+  opacity: 0.8;
+  font-family: 'Nunito Sans', sans-serif;
+  text-align: center;
 `
 
 const Form = styled.form`
@@ -125,6 +133,10 @@ export default ({}) => {
           </Submit>
         )}
       </Main>
+      <Footer>
+        Done by <a href="https://twitter.com/luotojesse">Jesse Luoto</a> •{' '}
+        <a href="https://github.com/jehna/wikigolf">Fork in Github</a>
+      </Footer>
     </>
   )
 }

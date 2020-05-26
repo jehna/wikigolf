@@ -61,6 +61,11 @@ const Note = styled.aside`
   image {
     border: 0;
   }
+
+  sup,
+  sub {
+    font-size: 0.5em;
+  }
 `
 
 const Submit = styled.button`
@@ -159,9 +164,10 @@ export default ({}) => {
             me $5 per ~100&nbsp;queries.
           </p>
           <p>
-            If you enjoy the site and want to keep it running, please consider
-            donating me <em>anything at all</em>. I'll promise to use all dimes
-            you throw at me to keep this site running.
+            If you enjoy the site and want to keep it running, please consider{' '}
+            <del>donating</del> buing a place at this website's credit section
+            <sup>[1]</sup>. I'll promise to use all dimes you throw at me to
+            keep this site running.
           </p>
           <p>
             Best regards
@@ -176,7 +182,7 @@ export default ({}) => {
             <input
               type="hidden"
               name="hosted_button_id"
-              value="R9WBP84QK5T72"
+              value="LQKNZQS33JX8Q"
             />
             <input
               type="image"
@@ -192,6 +198,10 @@ export default ({}) => {
               height="1"
             />
           </form>
+
+          <p>
+            <sub>1. My country's local legisation doesn't allow donations</sub>
+          </p>
         </Note>
       </Main>
       <Footer>

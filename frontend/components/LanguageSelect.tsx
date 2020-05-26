@@ -13,10 +13,11 @@ const Select = styled.select`
 
 interface LanguageSelectProps {
   onChange: (value: string) => void
+  value: string
 }
 
-export default ({ onChange }: LanguageSelectProps) => (
-  <Select onChange={(e) => onChange(e.target.value)}>
+export default ({ onChange, value }: LanguageSelectProps) => (
+  <Select onChange={(e) => onChange(e.target.value)} value={value}>
     <option value="en">English</option>
     <option value="fi">Finnish</option>
   </Select>

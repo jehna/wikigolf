@@ -89,8 +89,11 @@ export default ({}) => {
           <>
             <div>
               Find least amount of clicks in{' '}
-              <LanguageSelect onChange={(value) => setLang(value)} /> wikipedia
-              between:
+              <LanguageSelect
+                value={lang}
+                onChange={(value) => setLang(value)}
+              />{' '}
+              wikipedia between:
             </div>
             <Form onSubmit={onSubmit}>
               <PageSelector

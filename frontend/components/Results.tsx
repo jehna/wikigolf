@@ -21,7 +21,7 @@ export default ({ results, lang }: ResultsProps) => {
         {fromWikiUrl(results[results.length - 1])} in just {results.length - 1}{' '}
         clicks:
       </p>
-      <ol>
+      <ol start={0}>
         {results.map((result) => (
           <li key={result}>
             <a

@@ -83,30 +83,42 @@ export default ({}) => {
     <>
       <Heading>Wikigolf</Heading>
       <Main>
-        <div>
-          Find least amount of clicks in{' '}
-          <LanguageSelect onChange={(value) => setLang(value)} /> wikipedia
-          between:
-        </div>
-        <Form onSubmit={onSubmit}>
-          <PageSelector
-            lang={lang}
-            disabled={appState.type !== 'initial'}
-            onChange={(value) => setFrom(value)}
-            placeholder="E.g. Helsinki"
-          />
-          <div>and</div>
-          <PageSelector
-            lang={lang}
-            disabled={appState.type !== 'initial'}
-            onChange={(value) => setTo(value)}
-            placeholder="E.g. COVID-19"
-          />
-          {getResults(appState, from, to, lang)}
-        </Form>
+        {appState.type === 'success' ? (
+          <Results results={appState.results} lang={lang} />
+        ) : (
+          <>
+            <div>
+              Find least amount of clicks in{' '}
+              <LanguageSelect onChange={(value) => setLang(value)} /> wikipedia
+              between:
+            </div>
+            <Form onSubmit={onSubmit}>
+              <PageSelector
+                lang={lang}
+                disabled={appState.type !== 'initial'}
+                onChange={(value) => setFrom(value)}
+                placeholder="E.g. Helsinki"
+              />
+              <div>and</div>
+              <PageSelector
+                lang={lang}
+                disabled={appState.type !== 'initial'}
+                onChange={(value) => setTo(value)}
+                placeholder="E.g. COVID-19"
+              />
+              {appState.type === 'initial' && (
+                <Submit type="submit" disabled={!from || !to}>
+                  Search!
+                </Submit>
+              )}
+              {appState.type === 'loading' && <Loading />}
+            </Form>
+            {appState.type === 'error' && <div>{appState.error.message}</div>}
+          </>
+        )}
         {(appState.type === 'error' || appState.type === 'success') && (
           <Submit type="button" onClick={restart}>
-            Restart
+            Try again
           </Submit>
         )}
       </Main>
@@ -116,26 +128,4 @@ export default ({}) => {
 
 function isLoading(state: AppState): state is LoadingState {
   return state.type === 'loading'
-}
-
-function getResults(
-  appState: AppState,
-  from: string,
-  to: string,
-  lang: string
-) {
-  switch (appState.type) {
-    case 'success':
-      return <Results results={appState.results} lang={lang} />
-    case 'loading':
-      return <Loading />
-    case 'initial':
-      return (
-        <Submit type="submit" disabled={!from || !to}>
-          Search!
-        </Submit>
-      )
-    case 'error':
-      return <div>{appState.error.message}</div>
-  }
 }

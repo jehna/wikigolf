@@ -39,26 +39,16 @@ interface PageSelectorProps {
   placeholder?: string
 }
 
-const debounce = (ms: number) => {
-  let timeout: number
-  return <T extends any[]>(cb: (...args: T) => void) => (...args: T) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => cb(...args), ms)
-  }
+const useDebounce = (
+  fn: () => void,
+  delay: number,
+  deps: React.DependencyList
+) => {
+  useEffect(() => {
+    const timeout = setTimeout(fn, delay)
+    return () => clearTimeout(timeout)
+  }, deps)
 }
-
-const onValueChange = debounce(200)(
-  async (
-    localValue: string,
-    selectedValue: string,
-    lang: string,
-    setSuggestions: (value: string[]) => void
-  ) => {
-    if (!localValue || selectedValue === localValue) return
-    const result = await suggestWikiPage(localValue, lang)
-    setSuggestions(result)
-  }
-)
 
 export default ({
   onChange,
@@ -70,8 +60,13 @@ export default ({
   const [selectedvalue, setSelectedValue] = useState('')
   const [suggestions, setSuggestions] = useState<string[]>([])
 
-  useEffect(
-    () => onValueChange(localValue, selectedvalue, lang, setSuggestions),
+  useDebounce(
+    async () => {
+      if (!localValue || selectedvalue === localValue) return
+      const result = await suggestWikiPage(localValue, lang)
+      setSuggestions(result)
+    },
+    200,
     [localValue, lang]
   )
 

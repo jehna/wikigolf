@@ -37,11 +37,29 @@ const Footer = styled.footer`
   opacity: 0.8;
   font-family: 'Nunito Sans', sans-serif;
   text-align: center;
+  padding-bottom: 15px;
 `
 
 const Form = styled.form`
   margin: 1em 0;
   text-align: center;
+`
+
+const Note = styled.aside`
+  padding: 20px 30px;
+  margin-top: 30px;
+  font-size: 0.7em;
+  border: 2px solid #fff5a0;
+  color: #333;
+
+  form {
+    text-align: center;
+  }
+
+  input,
+  image {
+    border: 0;
+  }
 `
 
 const Submit = styled.button`
@@ -132,6 +150,48 @@ export default ({}) => {
             Try again
           </Submit>
         )}
+        <Note>
+          <p>Howdy there!</p>
+          <p>
+            Sorry to bother you, but I just realised I've gone over my free
+            quota for this site (1TB of data) and now keeping this site up costs
+            me $5 per ~100&nbsp;queries.
+          </p>
+          <p>
+            If you enjoy the site and want to keep it running, please consider
+            donating me <em>anything at all</em>. I'll promise to use all dimes
+            you throw at me to keep this site running.
+          </p>
+          <p>
+            Best regards
+            <br />- Jesse
+          </p>
+          <form
+            action="https://www.paypal.com/cgi-bin/webscr"
+            method="post"
+            target="_top"
+          >
+            <input type="hidden" name="cmd" value="_s-xclick" />
+            <input
+              type="hidden"
+              name="hosted_button_id"
+              value="R9WBP84QK5T72"
+            />
+            <input
+              type="image"
+              src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
+              name="submit"
+              title="PayPal - The safer, easier way to pay online!"
+              alt="Donate with PayPal button"
+            />
+            <img
+              alt=""
+              src="https://www.paypal.com/en_FI/i/scr/pixel.gif"
+              width="1"
+              height="1"
+            />
+          </form>
+        </Note>
       </Main>
       <Footer>
         Done by <a href="https://twitter.com/luotojesse">Jesse Luoto</a> •{' '}

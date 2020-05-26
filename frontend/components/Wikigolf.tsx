@@ -51,6 +51,7 @@ const Note = styled.aside`
   font-size: 0.7em;
   border: 2px solid #fff5a0;
   color: #333;
+  opacity: 0.8;
 
   form {
     text-align: center;

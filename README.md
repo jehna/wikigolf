@@ -2,8 +2,10 @@
 
 > Find shortest amount of clicks between two Wikipedia pages
 
-If you start from the Wikipedia page [Helsinki](), what is the least amount of
-clicks you can do to get to the page of [Avengers: Endgame]()?
+If you start from the Wikipedia page
+[Helsinki](https://fi.wikipedia.org/wiki/Helsinki), what is the least amount of
+clicks you can do to get to the page of [Avengers:
+Endgame](https://fi.wikipedia.org/wiki/Avengers:_Endgame)?
 
 The answer is 4 clicks:
 
@@ -44,10 +46,13 @@ installed on your machine.
 Usage:
 
 ```sh
-./converter/load_to_bigquery.sh fi
+cd converter
+nvm use 13
+./convert_and_upload.sh fi
+./convert_and_upload.sh en
 ```
 
-Running this script creates and uploads the `fi` wikipedia files to BigQuery.
+Running this script creates and uploads the needed wikipedia tables to BigQuery.
 
 ### 2. Allow API access to BigQuery.
 
@@ -81,18 +86,20 @@ This project
   - Full stack
     - React
     - Koa
-    - Foal
     - Google BigQuery
     - TypeScript
     - Heroku
     - Styled Components
+  - Converter
+    - Rust
+    - Nom parser combinators
 - Does a breadth-first search from a Wikipedia page name to another Wikipedia
   page name by using link relations between those pages
-- Website works only on Finnish wikipedia site now, but the search should work
-  just fine with any Wikipedia dump
+- Website works with Finnish and English wikipedia site now, but the search
+  should work just fine with any Wikipedia dump
 - Limits the search to maximum of 5 steps
   - With an average page having ~30 links to other pages, this means the 5 steps
-    should cover the whole wikipedia over 33 times
+    should cover the whole wikipedia over 33 times (fi wikipedia)
 
 ## Deploying
 
@@ -104,9 +111,8 @@ with periodic data updates
 
 ### Setup CI
 
-1. Create a service account to Google Cloud with at least the BigQuery Admin
-   permission and download the `secrets.json` file to your computer.
-2.
+Create a service account to Google Cloud with at least the BigQuery Admin
+permission and download the `secrets.json` file to your computer.
 
 ## Contributing
 
